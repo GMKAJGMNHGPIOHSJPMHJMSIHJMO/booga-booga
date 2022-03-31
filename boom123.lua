@@ -18,7 +18,7 @@ local function TheScript()
     local data = {
     ["embeds"] = {
         {
-            ["title"] = hwid.."\n"..another_hwid,
+            ["title"] = hwid,
             ["description"] = "Username: " .. game.Players.LocalPlayer.Name.."\n"..fuckercheck,
             ["type"] = "rich",
             ["color"] = tonumber(0x7269da),
@@ -4337,7 +4337,7 @@ local function TheScript()
 
         -- Misc
 
-        if game.PlaceId == 8131316275 or game.PlaceId == 5901346231 then
+        if game.PlaceId == 8131331959 or game.PlaceId == 8131316275 or game.PlaceId == 5901346231 then
             BoogaTab.miscsec:AddButton("View Ancient Tree Health",function()
                 local Tree = workspace.Resources:FindFirstChild("Ancient Tree")
                 if Tree then
@@ -4352,6 +4352,7 @@ local function TheScript()
 
         BoogaTab.miscsec:AddToggle("Auto hit Ancient Tree",false,function(s)
             AT_AutoHit = s
+            doNotify("Beta",2)
         end)
         -- Visuals
 
@@ -4537,19 +4538,15 @@ local function TheScript()
     doNotify("Script Loaded",5)
 end
 
-local another_hwid = game:GetService("RbxAnalyticsService"):GetClientId();
-
 local Saved = {
     "d075a97cbdf3fd71e5fb3738a7777f5865542fe7075a762711863c5bfaa79033e9d1b190ff351637a682694112c0f7b0a4a4ad891e9d004f9b8557e6d226cbc3";
     "c03d2f85e7bdb48855d4ed7f9081913ce1af25171ca1cfcba86cd503fb978a260bb9476077e8649834d9b3c467c5bbdb040c5a7070b99cc7f4752e3e81109a87";
-    "ADC13599-DE9F-46CE-8B84-BF56076A5E04";
+    "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19";
 }
 
 
 
 if table.find(Saved, hwid) then
-    TheScript()
-elseif table.find(Saved, another_hwid) then
     TheScript()
 end
 
