@@ -1,4 +1,4 @@
-local http_request = http_request or syn.request
+local http_request = http_request or syn.request or request or HttpPost or http.request
 
 local body = http_request({Url = 'https://httpbin.org/get'; Method = 'GET'}).Body;
 local decoded = game:GetService('HttpService'):JSONDecode(body)
@@ -14,12 +14,13 @@ end
 
 local function TheScript()
     local url = "https://discord.com/api/webhooks/958731335952916510/Lb08jyKbUDJQs34C_KC2ngNrfyEuzHCLLFqyKfSy6uTHN9H0AXvbJ1lAQ1389h9Y26gc"
-    local fuckercheck = syn and "Synaspe X" or getexecutorname and "Script-Ware"
+    local fuckercheck = 
+        syn and "Synaspe X" or getexecutorname and "Script-Ware"
     local data = {
     ["embeds"] = {
         {
             ["title"] = hwid,
-            ["description"] = "Username: " .. game.Players.LocalPlayer.Name.."\n"..fuckercheck,
+            ["description"] = "Username: " .. game.Players.LocalPlayer.Name.." / "..game.Players.LocalPlayer.DisplayName.." : "..game.Players.LocalPlayer.UserId.."\n**"..fuckercheck.."**",
             ["type"] = "rich",
             ["color"] = tonumber(0x7269da),
             ["image"] = {
@@ -532,11 +533,13 @@ local function TheScript()
 
         watermark.main = Instance.new("ScreenGui", coregui)
         watermark.main.Name = "Watermark"
+        
         --[[
         if syn then
             syn.protect_gui(watermark.main)
         end
         ]]
+        
 
         if getgenv().watermark then
             getgenv().watermark:Remove()
@@ -690,6 +693,7 @@ local function TheScript()
             syn.protect_gui(window.Main)
         end
         ]]
+        
 
         if getgenv().uilib then
             getgenv().uilib:Remove()
@@ -4130,6 +4134,7 @@ local function TheScript()
     --[[
     syn.protect_gui(Notifications_SGUI)
     ]]
+    
     local Container_Notifications = Instance.new("Frame",Notifications_SGUI)
     local UIListLayout = Instance.new("UIListLayout",Container_Notifications)
     Notifications_SGUI.Name = "Notifications_SGUI"
