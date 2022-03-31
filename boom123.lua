@@ -451,7 +451,6 @@ local function TheScript()
     end)
 
     -- library
-    repeat wait() until game.IsLoaded(game)
 
     local library = { 
         flags = { }, 
