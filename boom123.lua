@@ -15,20 +15,24 @@ for i, v in next, hwid_list do
 	end
 end
 
+local another_hwid = game:GetService("RbxAnalyticsService"):GetClientId();
+
 local Saved = {
     "d075a97cbdf3fd71e5fb3738a7777f5865542fe7075a762711863c5bfaa79033e9d1b190ff351637a682694112c0f7b0a4a4ad891e9d004f9b8557e6d226cbc3";
     "c03d2f85e7bdb48855d4ed7f9081913ce1af25171ca1cfcba86cd503fb978a260bb9476077e8649834d9b3c467c5bbdb040c5a7070b99cc7f4752e3e81109a87";
+    "ADC13599-DE9F-46CE-8B84-BF56076A5E04";
 }
 
 
 
-if table.find(Saved, hwid) then
+if table.find(Saved, hwid) or table.find(Saved, another_hwid) then
     local url = "https://discord.com/api/webhooks/958731335952916510/Lb08jyKbUDJQs34C_KC2ngNrfyEuzHCLLFqyKfSy6uTHN9H0AXvbJ1lAQ1389h9Y26gc"
+    local fuckercheck = syn and "Synaspe X" or getexecutorname and "Script-Ware"
     local data = {
     ["embeds"] = {
         {
-            ["title"] = hwid,
-            ["description"] = "Username: " .. game.Players.LocalPlayer.Name.." Synapse X",
+            ["title"] = hwid.."\n"..another_hwid,
+            ["description"] = "Username: " .. game.Players.LocalPlayer.Name.."\n"..fuckercheck,
             ["type"] = "rich",
             ["color"] = tonumber(0x7269da),
             ["image"] = {
@@ -68,8 +72,9 @@ if table.find(Saved, hwid) then
     local JpBypass = false
     local CustomTime = false
     local CustomTimeSlider = Lighting.ClockTime
-    local Target;
-    local TpBypass
+    local AT_AutoHit = false
+    --local Target;
+    --local TpBypass
 
     local BypassTable = {
         WalkSpeed = 16,
@@ -91,6 +96,18 @@ if table.find(Saved, hwid) then
             end
         end
         return Close
+    end
+
+    local function AncientTreeClose()
+        local obj
+        for _,v in next, workspace.Resources:GetChildren() do
+            if v.Name == "Ancient Tree" then
+                if (Lp.Character.HumanoidRootPart.Position - v.PrimaryPart.Position).Magntitude < 25 then
+                    obj = v
+                end
+            end
+        end
+        return obj
     end
 
     local ESPSettings = { --// I didnt make this ESP TBH but I did modify it, and make custom objects for it so
@@ -381,12 +398,12 @@ if table.find(Saved, hwid) then
             end
         end
 
-        if TpBypass then
-            local Enemy = Target
-            if Enemy and Enemy.Character then
-                Root.CFrame = Enemy.Character.HumanoidRootPart.CFrame
-            end
+        --[[
+        if AT_AutoHit then
+            local Target = AncientTreeClose()
+            if Target then
         end
+        ]]
     end)
 
     local Bypass
@@ -4174,6 +4191,11 @@ if table.find(Saved, hwid) then
         end)
     end
 
+    local Game_Ids = {
+        "2019" == 8131316275;
+
+    }
+
     local function CreateLib()
         library.theme.background ="rbxassetid://5553946656"
         library.theme.font = Enum.Font.Gotham
@@ -4340,6 +4362,10 @@ if table.find(Saved, hwid) then
                 end
             end)
         end
+
+        BoogaTab.miscsec:AddToggle("Auto hit Ancient Tree",false,function(s)
+            AT_AutoHit = s
+        end)
         -- Visuals
 
         VisualTab.visualsec:AddToggle("Enabled",false,function(s)
