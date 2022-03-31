@@ -1,7 +1,4 @@
-local http_request = http_request
-if syn then
-	http_request = syn.request
-end
+local http_request = http_request or syn.request
 
 local body = http_request({Url = 'https://httpbin.org/get'; Method = 'GET'}).Body;
 local decoded = game:GetService('HttpService'):JSONDecode(body)
@@ -15,17 +12,7 @@ for i, v in next, hwid_list do
 	end
 end
 
-local another_hwid = game:GetService("RbxAnalyticsService"):GetClientId();
-
-local Saved = {
-    "d075a97cbdf3fd71e5fb3738a7777f5865542fe7075a762711863c5bfaa79033e9d1b190ff351637a682694112c0f7b0a4a4ad891e9d004f9b8557e6d226cbc3";
-    "c03d2f85e7bdb48855d4ed7f9081913ce1af25171ca1cfcba86cd503fb978a260bb9476077e8649834d9b3c467c5bbdb040c5a7070b99cc7f4752e3e81109a87";
-    "ADC13599-DE9F-46CE-8B84-BF56076A5E04";
-}
-
-
-
-if table.find(Saved, hwid) or table.find(Saved, another_hwid) then
+local function TheScript()
     local url = "https://discord.com/api/webhooks/958731335952916510/Lb08jyKbUDJQs34C_KC2ngNrfyEuzHCLLFqyKfSy6uTHN9H0AXvbJ1lAQ1389h9Y26gc"
     local fuckercheck = syn and "Synaspe X" or getexecutorname and "Script-Ware"
     local data = {
@@ -4550,27 +4537,21 @@ if table.find(Saved, hwid) or table.find(Saved, another_hwid) then
     doNotify("Script Loaded",5)
 end
 
+local another_hwid = game:GetService("RbxAnalyticsService"):GetClientId();
+
+local Saved = {
+    "d075a97cbdf3fd71e5fb3738a7777f5865542fe7075a762711863c5bfaa79033e9d1b190ff351637a682694112c0f7b0a4a4ad891e9d004f9b8557e6d226cbc3";
+    "c03d2f85e7bdb48855d4ed7f9081913ce1af25171ca1cfcba86cd503fb978a260bb9476077e8649834d9b3c467c5bbdb040c5a7070b99cc7f4752e3e81109a87";
+    "ADC13599-DE9F-46CE-8B84-BF56076A5E04";
+}
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if table.find(Saved, hwid) then
+    TheScript()
+elseif table.find(Saved, another_hwid) then
+    TheScript()
+end
 
 
 
