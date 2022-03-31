@@ -49,11 +49,12 @@ local function TheScript()
 
     local Aura = false
     local Hbe = false
-    local HbeSize = Vector3.new(1,1,1)
+    local HbeSize;
     local AmbientTog = false
+    local BrightColor;
     local AmbientColor;
     local FogEndSlide = 5000
-    local HbeColor;
+    --local HbeColor;
     local FOV
     local FOVSlide = 70
     local WsBypass = false
@@ -64,10 +65,15 @@ local function TheScript()
     --local Target;
     --local TpBypass
 
+
+    local TotemFolder = workspace.Totems
+    local resources = workspace.Resources
+
     local BypassTable = {
         WalkSpeed = 16,
         JumpPower = 50
     }
+
 
     local WsSlider = 16
     local JpSlider = 50
@@ -120,6 +126,13 @@ local function TheScript()
             HealthBar = Color3.fromRGB(176,0,232),
             HighlightedColor = Color3.fromRGB(255,0,0),
         },
+        CustomObjs = {
+            Totems = false,
+            GoldNode = false,
+        },
+        CustomObjColors = {
+            GoldNode = Color3.fromRGB(255, 255, 0),
+        },
     }
 
 
@@ -145,7 +158,73 @@ local function TheScript()
         Frame.BackgroundTransparency = 0.8
     end
 
-    local function ESP(v)
+    function esp_gold(obj,text)
+        local Text = Drawing.new("Text")
+        Text.Center = true
+        Text.Visible = false
+        Text.Transparency = 1
+        Text.Outline = true
+        game.GetService(game,"RunService").RenderStepped:Connect(function()
+            Text.Color = ESPSettings.CustomObjColors.GoldNode
+            if ESPSettings.CustomObjs.GoldNode == true then
+                local Vector, onScreen = Camera:WorldToViewportPoint(obj.Position)
+                if onScreen and obj ~= nil and obj.Position ~= nil and obj.Parent ~= nil then
+                    Text.Text = text
+                    Text.Position = Vector2.new(Vector.X + 5,Vector.Y)
+                    Text.Size = ESPSettings.TextSize
+                    Text.Visible = true
+                    if ESPSettings.Font == "UI" then 
+                        Text.Font = 0
+                    elseif ESPSettings.Font == "Monospace" then
+                        Text.Font =3 
+                    elseif ESPSettings.Font == "System" then
+                        Text.Font =1
+                    elseif ESPSettings.Font == "Plex" then
+                        Text.Font =2 
+                    end
+                else
+                    Text.Visible = false 
+                end
+            else
+                Text.Visible = false
+            end
+        end)
+    end
+
+    function esp_totems(obj,text,color)
+        local Text = Drawing.new("Text")
+        Text.Center = true
+        Text.Visible = false
+        Text.Transparency = 1
+        Text.Outline = true
+        game.GetService(game,"RunService").RenderStepped:Connect(function()
+            Text.Color = color
+            if ESPSettings.CustomObjs.Totems == true then 
+                local Vector, onScreen = Camera:WorldToViewportPoint(obj.Position)
+                if onScreen and obj ~= nil and obj.Position ~= nil and obj.Parent ~= nil then
+                    Text.Text = text
+                    Text.Position = Vector2.new(Vector.X + 5,Vector.Y)
+                    Text.Size = ESPSettings.TextSize
+                    Text.Visible = true
+                    if ESPSettings.Font == "UI" then 
+                        Text.Font = 0
+                    elseif ESPSettings.Font == "Monospace" then 
+                        Text.Font = 3 
+                    elseif ESPSettings.Font == "System" then 
+                        Text.Font = 1
+                    elseif ESPSettings.Font == "Plex" then 
+                        Text.Font = 2
+                    end
+                else
+                    Text.Visible = false 
+                end
+            else
+                Text.Visible = false
+            end
+        end)
+    end
+
+    local function ESP(v,color)
         local lookLine = Drawing.new("Line") 
         lookLine.Thickness = 1.2 
         lookLine.Transparency =1 
@@ -310,7 +389,7 @@ local function TheScript()
                         Name.Position = Vector2.new(workspace.Camera:WorldToViewportPoint(v.Character.Head.Position).X, workspace.Camera:WorldToViewportPoint(v.Character.Head.Position).Y - 30)
                         Name.Visible = true
                         Name.Size = ESPSettings.TextSize
-                        Name.Color = ESPSettings.Colors.Text
+                        Name.Color = color
                         Gun.Color = ESPSettings.Colors.Text
                         if ESPSettings.Font == "UI" then
                             Name.Font = 0
@@ -353,12 +432,70 @@ local function TheScript()
     end
 
     for i,v in pairs(Players:GetChildren()) do
-        ESP(v)
+        --[[
+        if v.Character["Body Colors"].TorsoColor3 == Color3.fromRGB(0,0,0) then
+            return Color3.fromRGB(255,255,255)
+        end
+        ]]
+        ESP(v,v.Character["Body Colors"].TorsoColor3)
+    end
+    
+    Players.PlayerAdded:Connect(function(v)
+        if v and v.Character and v.Character:FindFirstChild("Body Colors") then
+            ESP(v,v.Character["Body Colors"].TorsoColor3)
+        end
+    end)
+
+        --[[
+    5901346231 - Hybrid
+    8131316275 - 2019
+    ]]
+
+    if game.PlaceId == 8131316275 then
+        for _,v in next, resources:GetChildren() do
+            if v:IsA("Model") and v.Name == "Gold Crag" and v.PrimaryPart ~= nil then
+                esp_gold(v.PrimaryPart, "Gold Node")
+            end
+        end
+    
+        resources.ChildAdded:Connect(function(Node)
+            delay(1,function()
+                if Node.Name == "Gold Crag" then
+                    esp_gold(Node.PrimaryPart, "Gold Node")
+                end
+            end)
+        end)
+    elseif game.PlaceId == 5901346231 then
+        for _,v in next, resources:GetChildren() do
+            if v:IsA("Model") and v.Name == "Gold Node" and v.PrimaryPart ~= nil then
+                esp_gold(v.PrimaryPart, "Gold Node")
+            end
+        end
+    
+        resources.ChildAdded:Connect(function(Node)
+            delay(1,function()
+                if Node.Name == "Gold Node" then
+                    esp_gold(Node.PrimaryPart, "Gold Node")
+                end
+            end)
+        end)
     end
 
-    Players.PlayerAdded:Connect(function(v)
-        ESP(v)
-    end)
+    
+
+    --if game.PlaceId == 8131316275 or game.PlaceId == 8131331959 then
+        for i,v in next, workspace.Totems:GetChildren() do
+            if v:IsA("Model") and v.PrimaryPart ~= nil then
+                esp_totems(v.PrimaryPart, "Tribe Totem", v.Coloration.Color)
+            end
+        end
+        
+        TotemFolder.ChildAdded:Connect(function(Totem)
+            delay(1,function()
+                esp_totems(Totem.PrimaryPart, "Tribe Totem", Totem.Coloration.Color)
+            end)
+        end)
+    --end
 
     Rs.Stepped:Connect(function()
         if Aura then
@@ -406,28 +543,39 @@ local function TheScript()
     Rs.RenderStepped:Connect(function()
         if FOV then
             game:GetService'Workspace'.Camera.FieldOfView = FOVSlide
+        else
+            game:GetService'Workspace'.Camera.FieldOfView = 70
         end
         
         if CustomTime then
             Lighting.ClockTime = CustomTimeSlider
         end
 
-        
-        for _, v in next, Players:GetPlayers() do
-            if v ~= Lp and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-                local Target = v.Character.HumanoidRootPart
-                if Hbe then
-                    Target.Size = HbeSize
-                    Target.Transparency = 0.5
-                    Target.Color = HbeColor
-                else
-                    Target.Size = Root.Size
-                    Target.Transparency = Root.Transparency
-                    Target.Color = Root.Color
+        --[[
+        Rs.RenderStepped:Connect(function()
+            for i,v in next, Players:GetPlayers() do
+                if v ~= Lp and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+                    local Target = v.Character.HumanoidRootPart
+                    if Hbe then
+                        Target.Size = HbeSize
+                        --Target.Color = Color3.fromRGB(255,255,255)
+                        Target.Transparency = 0.5
+                    else
+                        Target.Size = Root.Size
+                        --Target.Color = Root.Color
+                        Target.Transparency = Root.Transparency
+                    end
                 end
             end
+        end)
+        ]]
+        if AmbientTog then
+            Lighting.Ambient = AmbientColor
+        else
+            Lighting.Ambient = Color3.fromRGB(102, 102, 102)
         end
 
+        Lighting.Brightness = BrightColor
 
 
         if JpBypass then
@@ -4188,11 +4336,6 @@ local function TheScript()
         end)
     end
 
-    local Game_Ids = {
-        "2019" == 8131316275;
-
-    }
-
     local function CreateLib()
         library.theme.background ="rbxassetid://5553946656"
         library.theme.font = Enum.Font.Gotham
@@ -4221,6 +4364,7 @@ local function TheScript()
 
         local Teleports = {
             GameTeleports = Tabs.TeleportTab:CreateSector("Game Teleports", "left"),
+            IgTeleports = Tabs.TeleportTab:CreateSector("In-Game Teleports", "right"),
         }
 
         local InventoryStuff = {
@@ -4257,6 +4401,7 @@ local function TheScript()
                 FOV = true
             elseif s == false then
                 FOV = false
+                
             end
         end)
         FOVToggle:AddSlider(70,70,120,10,function(v)
@@ -4312,16 +4457,6 @@ local function TheScript()
         else
             BoogaTab.boogasec:AddLabel("Only available for 2019")
         end
-
-        -- Trolling/Exploit
-
-        local TeleportBypassLoL = BoogaTab.exploiotsec:AddToggle("Tp to Player BYPASS",false,function(s)
-            TpBypass = s
-        end)
-        TeleportBypassLoL:AddTextbox(false,function(txt)
-            Target = txt
-        end)
-
         -- Combat
         local AuraTog = BoogaTab.mainsec:AddToggle("Kill Aura",false,function(s)
             Aura = s
@@ -4335,15 +4470,14 @@ local function TheScript()
 
         BoogaTab.mainsec:AddSeperator("")
 
+        --[[
         local HbeSlider = BoogaTab.mainsec:AddToggle("Hitbox Expander",false,function(s)
             Hbe = s
         end)
-        HbeSlider:AddSlider(1,1,18,1,false,function(v)
+        HbeSlider:AddSlider(1,1,20,false,function(v)
             HbeSize = Vector3.new(v,v,v)
         end)
-        HbeSlider:AddColorpicker(Color3.fromRGB(255,255,255),function(c)
-            HbeColor = c
-        end)
+        ]]
 
         -- Misc
 
@@ -4370,11 +4504,8 @@ local function TheScript()
             ESPSettings.Players = s
         end)
 
-        local NameTog = VisualTab.visualsec:AddToggle("Draw Names",false,function(s)
+        VisualTab.visualsec:AddToggle("Draw Names",false,function(s)
             ESPSettings.Name = s
-        end)
-        NameTog:AddColorpicker(Color3.fromRGB(255,255,255),function(c)
-            ESPSettings.Colors.Text = c
         end)
 
         local BoxTog = VisualTab.visualsec:AddToggle("Draw Boxes",false,function(s)
@@ -4390,7 +4521,17 @@ local function TheScript()
         HealthTog:AddColorpicker(Color3.fromRGB(0,255,0), function(c)
             ESPSettings.Colors.HealthBar = c
         end)
-        
+
+        VisualTab.visualsec:AddSeperator("Object ESP")
+        VisualTab.visualsec:AddToggle("Tribe Totems", false,function(s)
+            ESPSettings.CustomObjs.Totems = s
+        end)
+        local NodeEsp = VisualTab.visualsec:AddToggle("Gold Nodes",false,function(s)
+            ESPSettings.CustomObjs.GoldNode = s
+        end)
+        NodeEsp:AddColorpicker(Color3.fromRGB(255,255,0),function(c)
+            ESPSettings.CustomObjColors.GoldNode = c
+        end)
         local ClockTimetoggle = VisualTab.lightsec:AddToggle("ClockTime",false,function(s)
             CustomTime = s
         end)
@@ -4403,6 +4544,20 @@ local function TheScript()
             Lighting.FogEnd = v
         end)
 
+        local AmbientColorSlider = VisualTab.lightsec:AddToggle("Custom Ambient",false,function(s)
+            AmbientTog = s
+        end)
+        AmbientColorSlider:AddColorpicker(Color3.fromRGB(255,255,255),function(c)
+            AmbientColor = c
+        end)
+        VisualTab.lightsec:AddSlider("Brightness",1,1,10,false,function(v)
+            BrightColor = v
+        end)
+        VisualTab.lightsec:AddToggle("Shadows",false,function(s)
+            Lighting.GlobalShadows = s
+        end)
+        
+
         -- Teleports
 
         Teleports.GameTeleports:AddButton("Hybrid",function() TPService:Teleport(5901346231, Lp) end)
@@ -4410,6 +4565,9 @@ local function TheScript()
         Teleports.GameTeleports:AddButton("Classic",function() TPService:Teleport(4787629450, Lp) end)
         Teleports.GameTeleports:AddButton("2019 Void",function() TPService:Teleport(8131331959, Lp) end)
         Teleports.GameTeleports:AddButton("Rejoin",function() TPService:Teleport(game.PlaceId, Lp) end)
+
+        Teleports.IgTeleports:AddButton("Teleport to Lava",function() Root.CFrame = CFrame.new(-1115.5116, -200.768265, -740.395874, 0.984812498, 0, 0.173621148, 0, 1, 0, -0.173621148, 0, 0.984812498) end)
+        Teleports.IgTeleports:AddButton("Teleport to hole",function() Root.CFrame = CFrame.new(1113.73425, -140.997803, 1154.46179, -0.996191859, 0, 0.0871884301, 0, 1, 0, -0.0871884301, 0, -0.9961918) end)
 
         -- Backpack
 
