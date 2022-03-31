@@ -497,7 +497,7 @@ local function TheScript()
         itemscolor2 = Color3.fromRGB(210, 210, 210)
     }
 
-    if library.theme.cursor and Drawing then
+    if library.theme.cursor then
         local success = pcall(function() 
             library.cursor = Drawing.new("Image")
             library.cursor.Data = game:HttpGet(library.theme.cursorimg)
@@ -532,9 +532,11 @@ local function TheScript()
 
         watermark.main = Instance.new("ScreenGui", coregui)
         watermark.main.Name = "Watermark"
+        --[[
         if syn then
             syn.protect_gui(watermark.main)
         end
+        ]]
 
         if getgenv().watermark then
             getgenv().watermark:Remove()
@@ -683,9 +685,11 @@ local function TheScript()
         window.Main = Instance.new("ScreenGui", coregui)
         window.Main.Name = name
         window.Main.DisplayOrder = 15
+        --[[
         if syn then
             syn.protect_gui(window.Main)
         end
+        ]]
 
         if getgenv().uilib then
             getgenv().uilib:Remove()
@@ -4123,7 +4127,9 @@ local function TheScript()
     -- library end
 
     local Notifications_SGUI = Instance.new("ScreenGui",game.CoreGui)
+    --[[
     syn.protect_gui(Notifications_SGUI)
+    ]]
     local Container_Notifications = Instance.new("Frame",Notifications_SGUI)
     local UIListLayout = Instance.new("UIListLayout",Container_Notifications)
     Notifications_SGUI.Name = "Notifications_SGUI"
