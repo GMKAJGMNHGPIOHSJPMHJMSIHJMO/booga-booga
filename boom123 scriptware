@@ -1,0 +1,727 @@
+local http_request = http_request or syn.request or request or HttpPost or http.request
+
+local body = http_request({Url = 'https://httpbin.org/get'; Method = 'GET'}).Body;
+local decoded = game:GetService('HttpService'):JSONDecode(body)
+local hwid_list = {"Syn-Fingerprint", "Exploit-Guid", "Proto-User-Identifier", "Sentinel-Fingerprint"};
+local hwid = "";
+
+for i, v in next, hwid_list do
+	if decoded.headers[v] then
+		hwid = decoded.headers[v];
+		break
+	end
+end
+
+if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" then
+    local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+    local Window = Library.CreateLib("ReaperMad", "GrapeTheme")
+
+    local boogatab = Window:NewTab("Booga Booga")
+    local visualTab = Window:NewTab("Visuals")
+    local TeleportTab = Window:NewTab("Teleports")
+    local BackpackTab = Window:NewTab("Backpack")
+    local configTab = Window:NewTab("Config")
+
+    local boogasec = boogatab:NewSection("Stuff")
+    local visualsec = visualTab:NewSection("Esp")
+    local lightsec = visualTab:NewSection("Lighting")
+    local backsec = BackpackTab:NewSection("Equip")
+    local GameTeleports = TeleportTab:NewSection("Game Teleports")
+    local IgTeleports = TeleportTab:NewSection("In-Game Teleports")
+    local uisec = configTab:NewSection("UI Toggle")
+
+
+    local Aura = false
+
+    local Players = game:GetService'Players'
+    local Lp = Players.LocalPlayer
+    local Rs = game:GetService'RunService'
+
+    local Notifications_SGUI = Instance.new("ScreenGui",game.CoreGui)
+        --[[
+        syn.protect_gui(Notifications_SGUI)
+        ]]
+        
+        local Container_Notifications = Instance.new("Frame",Notifications_SGUI)
+        local UIListLayout = Instance.new("UIListLayout",Container_Notifications)
+        Notifications_SGUI.Name = "Notifications_SGUI"
+        Container_Notifications.Name = "Container_Notifications"
+        Container_Notifications.BackgroundTransparency = 1.000
+        Container_Notifications.Position = UDim2.new(0, 0, 0.318235993, 0)
+        Container_Notifications.Size = UDim2.new(0, 345, 0, 304)
+
+        local function doNotify(text,time)
+            local Notifs_Accent = Instance.new("Frame")
+            local TextLabel = Instance.new("TextLabel")
+            local UIGradient = Instance.new("UIGradient")
+            local UIGradient_2 = Instance.new("UIGradient")
+            
+            Notifs_Accent.Name = "Notifs_Accent"
+            Notifs_Accent.Parent = Container_Notifications
+            Notifs_Accent.BackgroundColor3 = Color3.fromRGB(0,255,90)
+            Notifs_Accent.BorderColor3 = Color3.fromRGB(0, 0, 0)
+            Notifs_Accent.Size = UDim2.new(0, 16, 0, 30)
+            
+            TextLabel.Parent = Notifs_Accent
+            TextLabel.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
+            TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+            TextLabel.Position = UDim2.new(0.710000038, 0, 0, 0)
+            TextLabel.Size = UDim2.new(0, 0, 0, 30)
+            TextLabel:TweenSize(UDim2.new(0, 300, 0, 30),"Out","Sine",0.2,true);
+            
+            TextLabel.ClipsDescendants = true 
+            
+            TextLabel.Font = Enum.Font.Gotham
+            TextLabel.Text = text
+            TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            TextLabel.TextSize = 14.000
+            TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+            
+            UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(153, 153, 153)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
+            UIGradient.Rotation = 270
+            UIGradient.Parent = TextLabel
+            
+            UIGradient_2.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(39, 39, 39)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))}
+            UIGradient_2.Rotation = 270
+            UIGradient_2.Parent = Notifs_Accent
+            
+            task.spawn(function()
+                delay(time or 2,function()
+                    TextLabel:TweenSize(UDim2.new(0,20, 0, 30),"In","Linear",0.3,true);
+                    delay(0.5,function()
+                        Notifs_Accent:Destroy()
+                    end)
+                end)
+            end)
+        end
+
+    local ESPSettings = { --// I didnt make this ESP TBH but I did modify it, and make custom objects for it so
+        HighlightTarget = false,
+        ShowTool = false, --// player only option
+        DisplayName = false, --// Player only option
+        lookVectorVis = false,
+        Players = false,--// player only option
+        Box = false,--// player only option
+        Healthbar = false,--// player only option
+        Name = false,--// player only option
+        Chams = false,--// player only option
+        Font = "UI",  --// all drawing objects
+        UnlockTracers = false,--// player only option
+        Tracers = false,--// player only option
+        TextSize = 19,--// all drawing objects
+        Colors = { --// colors for the player drawings
+            Look = Color3.fromRGB(255,255,255),
+            Box = Color3.fromRGB(255,255,255),
+            Text = Color3.fromRGB(255,255,255),
+            Chams = Color3.fromRGB(86,0,232),
+            HealthBar = Color3.fromRGB(176,0,232),
+            HighlightedColor = Color3.fromRGB(255,0,0),
+        },
+        CustomObjs = {
+            Totems = false,
+            GoldNode = false,
+        },
+        CustomObjColors = {
+            GoldNode = Color3.fromRGB(255, 255, 0),
+        },
+    }
+
+
+    local Mouse = Lp:GetMouse()
+
+    local Camera = workspace.CurrentCamera
+    local worldToViewportPoint = Camera.worldToViewportPoint
+
+    function AddCham(parent, face) --// not mine
+        local Folder = Instance.new("Folder",parent)
+        Folder.Name = "IGNOREPLEASE"
+        local SurfaceGui = Instance.new("SurfaceGui",Folder) 
+        SurfaceGui.Parent = Folder
+        SurfaceGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+        SurfaceGui.Face = Enum.NormalId[face]
+        SurfaceGui.LightInfluence = 0
+        SurfaceGui.ResetOnSpawn = false
+        SurfaceGui.Name = "IGNORETHIS"
+        SurfaceGui.AlwaysOnTop = true
+        local Frame = Instance.new("Frame",SurfaceGui)
+        Frame.BackgroundColor3 = ESPSettings.Colors.Chams
+        Frame.Size = UDim2.new(1,0,1,0)
+        Frame.BackgroundTransparency = 0.8
+    end
+
+    function esp_gold(obj,text)
+        local Text = Drawing.new("Text")
+        Text.Center = true
+        Text.Visible = false
+        Text.Transparency = 1
+        Text.Outline = true
+        game.GetService(game,"RunService").RenderStepped:Connect(function()
+            Text.Color = ESPSettings.CustomObjColors.GoldNode
+            if ESPSettings.CustomObjs.GoldNode == true then
+                local Vector, onScreen = Camera:WorldToViewportPoint(obj.Position)
+                if onScreen and obj ~= nil and obj.Position ~= nil and obj.Parent ~= nil then
+                    Text.Text = text
+                    Text.Position = Vector2.new(Vector.X + 5,Vector.Y)
+                    Text.Size = ESPSettings.TextSize
+                    Text.Visible = true
+                    if ESPSettings.Font == "UI" then 
+                        Text.Font = 0
+                    elseif ESPSettings.Font == "Monospace" then
+                        Text.Font =3 
+                    elseif ESPSettings.Font == "System" then
+                        Text.Font =1
+                    elseif ESPSettings.Font == "Plex" then
+                        Text.Font =2 
+                    end
+                else
+                    Text.Visible = false 
+                end
+            else
+                Text.Visible = false
+            end
+        end)
+    end
+
+    function esp_totems(obj,text,color)
+        local Text = Drawing.new("Text")
+        Text.Center = true
+        Text.Visible = false
+        Text.Transparency = 1
+        Text.Outline = true
+        game.GetService(game,"RunService").RenderStepped:Connect(function()
+            Text.Color = color
+            if ESPSettings.CustomObjs.Totems == true then 
+                local Vector, onScreen = Camera:WorldToViewportPoint(obj.Position)
+                if onScreen and obj ~= nil and obj.Position ~= nil and obj.Parent ~= nil then
+                    Text.Text = text
+                    Text.Position = Vector2.new(Vector.X + 5,Vector.Y)
+                    Text.Size = ESPSettings.TextSize
+                    Text.Visible = true
+                    if ESPSettings.Font == "UI" then 
+                        Text.Font = 0
+                    elseif ESPSettings.Font == "Monospace" then 
+                        Text.Font = 3 
+                    elseif ESPSettings.Font == "System" then 
+                        Text.Font = 1
+                    elseif ESPSettings.Font == "Plex" then 
+                        Text.Font = 2
+                    end
+                else
+                    Text.Visible = false 
+                end
+            else
+                Text.Visible = false
+            end
+        end)
+    end
+
+    local function ESP(v,color)
+        local lookLine = Drawing.new("Line") 
+        lookLine.Thickness = 1.2 
+        lookLine.Transparency =1 
+        lookLine.Visible = false 
+
+        local BoxOutline = Drawing.new("Square")
+        BoxOutline.Visible = false
+        BoxOutline.Color = Color3.new(0,0,0)
+        BoxOutline.Thickness = 3
+        BoxOutline.Transparency = 1
+        BoxOutline.Filled = false
+
+        local Box = Drawing.new("Square")
+        Box.Visible = false
+        Box.Thickness = 1
+        Box.Transparency = 1
+        Box.Filled = false
+        Box.Color = Color3.new(1,1,1)
+
+        local HealthBarOutline = Drawing.new("Square")
+        HealthBarOutline.Thickness = 3
+        HealthBarOutline.Filled = false
+        HealthBarOutline.Color = Color3.new(0,0,0)
+        HealthBarOutline.Transparency = 1
+        HealthBarOutline.Visible = false
+
+        local HealthBar = Drawing.new("Square")
+        HealthBar.Thickness = 1
+        HealthBar.Filled = false
+        HealthBar.Transparency = 1
+        HealthBar.Visible = false
+        
+        local Tracer = Drawing.new("Line")
+        Tracer.Visible = false
+        Tracer.Color = Color3.new(1,1,1)
+        Tracer.Thickness = 1
+        Tracer.Transparency = 1
+        
+        local Name = Drawing.new("Text")
+        Name.Transparency = 1
+        Name.Visible = false
+        Name.Size = 12
+        Name.Center = true
+        Name.Outline = true
+        Name.Color = Color3.new(1,1,1)
+        
+
+        local Gun = Drawing.new("Text")
+        Gun.Transparency = 1
+        Gun.Visible = false
+        Gun.Color = Color3.new(1,1,1)
+        Gun.Size = 12
+        Gun.Center = true
+        Gun.Outline = true
+
+        game.GetService(game,"RunService").RenderStepped:Connect(function()
+            pcall(function()
+            if ESPSettings.Players == true and v.Character ~= nil and v.Character:FindFirstChild("Humanoid") ~= nil and v.Character:FindFirstChild("HumanoidRootPart") ~= nil and v.Character.Humanoid.Health > 0 and v.Character:FindFirstChild("Head") and v.Name ~= Lp.Name 
+            then
+                local Vector, onScreen = Camera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position)
+                local Distance = (Camera.CFrame.p - v.Character.PrimaryPart.Position).Magnitude
+                local RootPart = v.Character.HumanoidRootPart
+                local Head = v.Character.Head
+                local RootPosition, RootVis = worldToViewportPoint(Camera, RootPart.Position)
+                local HeadPosition = worldToViewportPoint(Camera, Head.Position + Vector3.new(0,0.5,0))
+                local LegPosition = worldToViewportPoint(Camera, RootPart.Position - Vector3.new(0,3,0))
+                    
+                if ESPSettings.Chams and v.Character.Head:FindFirstChild("IGNOREPLEASE") == nil then
+                    for i,v in next, v.Character:GetChildren() do
+                        if v:IsA("MeshPart") or v.Name == "Head" or v:IsA("Part") then
+                            AddCham(v, "Back")
+                            AddCham(v, "Front")
+                            AddCham(v, "Top")
+                            AddCham(v, "Bottom")
+                            AddCham(v, "Right")
+                            AddCham(v, "Left")
+                        end
+                    end
+                end
+                
+                if onScreen then
+                    BoxOutline.Size = Vector2.new(2600 / RootPosition.Z, HeadPosition.Y - LegPosition.Y)
+                    BoxOutline.Position = Vector2.new(RootPosition.X - BoxOutline.Size.X / 2, RootPosition.Y - BoxOutline.Size.Y / 1.8)
+                    Box.Size = Vector2.new(2600 / RootPosition.Z, HeadPosition.Y - LegPosition.Y)
+                    Box.Position = Vector2.new(RootPosition.X - Box.Size.X / 2, RootPosition.Y - Box.Size.Y / 1.8)
+                    if ESPSettings.Box then
+                        BoxOutline.Visible = true
+                        Box.Visible = true
+                        Box.Color = ESPSettings.Colors.Box
+                    else
+                        BoxOutline.Visible = false
+                        Box.Visible = false
+                    end
+
+                    if ESPSettings.Tracers then
+                        if ESPSettings.UnlockTracers then
+                            Tracer.From = Vector2.new(Mouse.X, Mouse.Y + 36)
+                        else
+                            Tracer.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 1)
+                        end
+                        Tracer.To = Vector2.new(Vector.X, Vector.Y)
+                        Tracer.Visible = true
+                    else
+                        Tracer.Visible = false
+                    end
+                    if ESPSettings.Healthbar then 
+                        HealthBarOutline.Size = Vector2.new(2, HeadPosition.Y - LegPosition.Y)
+                        HealthBarOutline.Position = BoxOutline.Position - Vector2.new(6,0)
+                        HealthBarOutline.Visible = true
+                        HealthBar.Visible = true
+                        
+                        HealthBar.Size = Vector2.new(2, (HeadPosition.Y - LegPosition.Y) / (v.Character.Humanoid.MaxHealth / math.clamp(v.Character.Humanoid.Health, 0,v.Character.Humanoid.MaxHealth)))
+                        HealthBar.Position = Vector2.new(Box.Position.X - 6, Box.Position.Y + (1 / HealthBar.Size.Y))
+                        HealthBar.Color = ESPSettings.Colors.HealthBar
+                        else
+                            HealthBarOutline.Visible = false
+                            HealthBar.Visible = false
+                    end
+                    if ESPSettings.ShowTool then 
+                        Gun.Size = ESPSettings.TextSize
+                        Gun.Text = (v.Character:FindFirstChildOfClass("Tool") ~= nil and v.Character:FindFirstChildOfClass("Tool").Name) or ""
+                        Gun.Position = Vector2.new(LegPosition.X, LegPosition.Y + 5)
+                        Gun.Visible = true
+                        if ESPSettings.Font == "UI" then
+                            Name.Font = 0
+                            Gun.Font = 0
+                        elseif ESPSettings.Font == "System" then
+                            Name.Font = 1
+                            Gun.Font = 1
+                        elseif ESPSettings.Font == "Plex" then
+                            Name.Font = 2
+                            Gun.Font = 2
+                        elseif ESPSettings.Font == "Monospace" then
+                            Name.Font = 3
+                            Gun.Font = 3
+                        end
+                        
+                        else
+                            Gun.Visible = false
+                    end
+                    if ESPSettings.lookVectorVis then 
+                        local mul = 100
+                        for idx = 10, 1, -1 do
+                            local rayhit, hitpos = workspace:FindPartOnRayWithIgnoreList(Ray.new(v.Character.Head.Position, v.Character.Head.CFrame.LookVector * mul), {Camera, v.Character}, false, true, "")
+                            local viewportpointhit, isOnScreen = Camera:WorldToViewportPoint(hitpos)
+                            lookLine.Color = ESPSettings.Colors.Look
+                            lookLine.Visible = true 
+                            lookLine.To = Vector2.new(viewportpointhit.X, viewportpointhit.Y)
+                            lookLine.From = Vector2.new(HeadPosition.X,HeadPosition.Y - 0.5)
+                        end
+                        else
+                            lookLine.Visible = false
+                    end
+
+                    if ESPSettings.Name then
+
+                        if ESPSettings.DisplayName then 
+                            Name.Text = string.format("[%sm] (%s) %s",tostring(math.floor(v:DistanceFromCharacter(Lp.Character.Head.Position))),v.DisplayName,v.Name)
+                        else
+                            Name.Text = string.format("[%sm] %s",tostring(math.floor(v:DistanceFromCharacter(Lp.Character.Head.Position))),v.Name)
+                        end
+                        Name.Position = Vector2.new(workspace.Camera:WorldToViewportPoint(v.Character.Head.Position).X, workspace.Camera:WorldToViewportPoint(v.Character.Head.Position).Y - 30)
+                        Name.Visible = true
+                        Name.Size = ESPSettings.TextSize
+                        Name.Color = color
+                        Gun.Color = ESPSettings.Colors.Text
+                        if ESPSettings.Font == "UI" then
+                            Name.Font = 0
+                            Gun.Font = 0
+                        elseif ESPSettings.Font == "System" then
+                            Name.Font = 1
+                            Gun.Font = 1
+                        elseif ESPSettings.Font == "Plex" then
+                            Name.Font = 2
+                            Gun.Font = 2
+                        elseif ESPSettings.Font == "Monospace" then
+                            Name.Font = 3
+                            Gun.Font = 3
+                        end
+                    else
+                        Name.Visible = false
+                    end
+                else
+                    lookLine.Visible = false 
+                    BoxOutline.Visible = false
+                    Box.Visible = false
+                    HealthBarOutline.Visible = false
+                    HealthBar.Visible = false
+                    Tracer.Visible = false
+                    Name.Visible = false
+                    Gun.Visible = false
+                end
+            else
+                lookLine.Visible = false 
+                BoxOutline.Visible = false
+                Box.Visible = false
+                HealthBarOutline.Visible = false
+                HealthBar.Visible = false
+                Tracer.Visible = false
+                Name.Visible = false
+                Gun.Visible = false
+            end
+            end)
+        end)
+    end
+
+    local resources = workspace.Resources
+    local TotemFolder = workspace.Totems
+
+    for i,v in pairs(Players:GetChildren()) do
+        if v and v.Character and v.Character:FindFirstChild("Body Colors") then
+        --[[
+        if v.Character["Body Colors"].TorsoColor3 == Color3.fromRGB(0,0,0) then
+            v.Character["Body Colors"].TorsoColor3 = Color3.fromRGB(255,255,255)
+        end
+        ]]
+            ESP(v,v.Character["Body Colors"].TorsoColor3)
+        end
+    end
+
+    Players.PlayerAdded:Connect(function(v)
+        if v and v.Character and v.Character:FindFirstChild("Body Colors") then
+            ESP(v,v.Character["Body Colors"].TorsoColor3)
+        end
+    end)
+
+    if game.PlaceId == 8131316275 then
+        for _,v in next, resources:GetChildren() do
+            if v:IsA("Model") and v.Name == "Gold Crag" and v.PrimaryPart ~= nil then
+                esp_gold(v.PrimaryPart, "Gold Node")
+            end
+        end
+
+        resources.ChildAdded:Connect(function(Node)
+            delay(1,function()
+                if Node.Name == "Gold Crag" then
+                    esp_gold(Node.PrimaryPart, "Gold Node")
+                end
+            end)
+        end)
+    elseif game.PlaceId == 5901346231 then
+        for _,v in next, resources:GetChildren() do
+            if v:IsA("Model") and v.Name == "Gold Node" and v.PrimaryPart ~= nil then
+                esp_gold(v.PrimaryPart, "Gold Node")
+            end
+        end
+
+        resources.ChildAdded:Connect(function(Node)
+            delay(1,function()
+                if Node.Name == "Gold Node" then
+                    esp_gold(Node.PrimaryPart, "Gold Node")
+                end
+            end)
+        end)
+    end
+
+
+
+    --if game.PlaceId == 8131316275 or game.PlaceId == 8131331959 then
+        for i,v in next, workspace.Totems:GetChildren() do
+            if v:IsA("Model") and v.PrimaryPart ~= nil then
+                esp_totems(v.PrimaryPart, "Tribe Totem", v.Coloration.Color)
+            end
+        end
+        
+        TotemFolder.ChildAdded:Connect(function(Totem)
+            delay(1,function()
+                esp_totems(Totem.PrimaryPart, "Tribe Totem", Totem.Coloration.Color)
+            end)
+        end)
+    --end
+
+    local function Closest()
+        local Close
+        for i,v in next, Players:GetPlayers() do
+            if v ~= Lp and v.Character and v.Character:FindFirstChild("Humanoid") then
+                if v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") then
+                    if (Lp.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude < 20 then
+                        Close = v
+                    end
+                end
+            end
+        end
+        return Close
+    end
+
+    Rs.Stepped:Connect(function()
+        if Aura then
+            local Enemy = Closest()
+            if Enemy and Enemy.Character then
+                local args = {
+                    [1] = {
+                        [1] = Enemy.Character.HumanoidRootPart,
+                        [2] = Enemy.Character.LeftUpperArm,
+                        [3] = Enemy.Character.RightUpperLeg,
+                        [4] = Enemy.Character.UpperTorso,
+                        [5] = Enemy.Character.LeftFoot,
+                        [6] = Enemy.Character.LeftLowerLeg,
+                        [7] = Enemy.Character.LowerTorso,
+                        [8] = Enemy.Character.RightLowerLeg,
+                        [9] = Enemy.Character.LeftHand,
+                        [10] = Enemy.Character.LeftUpperLeg,
+                        [11] = Enemy.Character.RightFoot,
+                        [12] = Enemy.Character.LeftLowerArm,
+                        [13] = Enemy.Character.Head
+                    }
+                }
+
+                game:GetService("ReplicatedStorage").Events.SwingTool:FireServer(unpack(args))
+            end
+        end
+    end)
+
+
+    boogasec:NewToggle("Kill Aura", "Toggles Aura",function(s)
+        Aura = s
+        doNotify("Kill Aura:"..tostring(Aura))
+    end)
+
+    local WsBypass
+
+    local shit
+    shit = hookmetamethod(game, "__newindex", function(Tab, Key ,Value)
+        if Tab == game.Players.LocalPlayer.Character.Humanoid and Key == "WalkSpeed" and WsBypass then
+            Value = 16
+        end
+        return shit(Tab, Key, Value)
+    end)
+
+
+    -- Client
+    boogasec:NewToggle("Walkspeed Bypass", "Toggles Walkspeed",function(s)
+        WsBypass = s
+    end)
+    --[[
+    WalkSpeedvariable:AddSlider(16,16,18,false,function(v)
+        WsSlider = v
+    end
+    ]]
+
+
+    boogasec:NewSlider("Field of View","Changes FOV of character",120,70,function(v)
+        game:GetService'Workspace'.Camera.FieldOfView = v
+    end)
+
+    boogasec:NewToggle("Inf Zoom out", "Toggles inf zoom out",function(s)
+        if s == true then
+            Lp.CameraMaxZoomDistance = 100000
+        else
+            Lp.CameraMaxZoomDistance = 400
+        end
+    end)
+
+    if game.PlaceId == 8131331959 or game.PlaceId == 8131316275 then
+        boogasec:NewButton("Void Shield","Changes spell to Void Shield",function()
+            if game.PlaceId == 8131331959 then
+                local args = {
+                    [1] = "Energy Shield"
+                }
+
+                game:GetService("ReplicatedStorage").Events.PromptSpellChoice:FireServer(unpack(args))
+            end
+        end)
+        boogasec:NewButton("Energy Bolt", "Changes spell to Energy bolt",function()
+            if game.PlaceId == 8131331959 then
+                local args = {
+                    [1] = "Energy Bolt"
+                }
+
+                game:GetService("ReplicatedStorage").Events.PromptSpellChoice:FireServer(unpack(args))
+            end
+        end)
+
+        boogasec:NewButton("Void Cloak", "Changes spell to Void cloak",function()
+            if game.PlaceId == 8131331959 then
+                local args = {
+                    [1] = "Void Cloak"
+                }
+
+                game:GetService("ReplicatedStorage").Events.PromptSpellChoice:FireServer(unpack(args))
+            end
+        end)
+    else
+        boogasec:NewLabel("Only available for 2019")
+    end
+
+
+
+
+
+    -- Visuals
+
+    visualsec:NewToggle("Enabled", "Toggles ESP",function(s)
+        ESPSettings.Players = s
+    end)
+
+    visualsec:NewToggle("Draw Names","Adds Names",function(s)
+        ESPSettings.Name = s
+    end)
+
+    visualsec:NewToggle("Draw Boxes", "Adds Boxes",function(s)
+        ESPSettings.Box = s
+    end)
+
+    visualsec:NewToggle("Draw Healthbar", "Adds healthbar",function(v)
+        ESPSettings.Healthbar = v
+    end)
+
+    visualsec:NewToggle("Tribe Totems", "Toggles Totem Esp",function(s)
+        ESPSettings.CustomObjs.Totems = s
+    end)
+    visualsec:NewToggle("Gold Nodes", "Toggles GoldNode Esp", function(s)
+        ESPSettings.CustomObjs.GoldNode = s
+    end)
+
+    local Lighting = game:GetService'Lighting'
+
+    lightsec:NewSlider("ClockTime", "Changes time of day", 14, 1, function(v) 
+        Lighting.ClockTime = v
+    end)
+
+    lightsec:NewSlider("Fog End", "Changes fog end", 5000,2000,function(v)
+        Lighting.FogEnd = v
+    end)
+    lightsec:NewSlider("Brightness", "Changes brightness of game", 10, 0, function(v) 
+        Lighting.Brightness = v
+    end)
+    lightsec:NewToggle("Shadows", "Toggles Shadows",function(s)
+        Lighting.GlobalShadows = s
+    end)
+
+
+    -- Teleports
+
+    local TPService = game:GetService'TeleportService'
+    local Root = Lp.Character.HumanoidRootPart
+    GameTeleports:NewButton("Hybrid", "Teleports to hybird", function() TPService:Teleport(5901346231, Lp) end)
+    GameTeleports:NewButton("2019", "Teleports to 2019", function() TPService:Teleport(8131316275, Lp) end)
+    GameTeleports:NewButton("Classic", "Teleports to Classic", function() TPService:Teleport(4787629450, Lp) end)
+    GameTeleports:NewButton("2019 Void", "Teleports 2019 void", function() TPService:Teleport(8131331959, Lp) end)
+    GameTeleports:NewButton("Rejoin", "S.E",function() TPService:Teleport(game.PlaceId, Lp) end)
+
+    IgTeleports:NewButton("Teleport to Lava", "Teleports to lava area", function() Root.CFrame = CFrame.new(-1115.5116, -200.768265, -740.395874, 0.984812498, 0, 0.173621148, 0, 1, 0, -0.173621148, 0, 0.984812498) end)
+    IgTeleports:NewButton("Teleport to hole", "Teleports to S.E", function() Root.CFrame = CFrame.new(1113.73425, -140.997803, 1154.46179, -0.996191859, 0, 0.0871884301, 0, 1, 0, -0.0871884301, 0, -0.9961918) end)
+
+    -- Backpack
+
+    uisec:NewKeybind("UI", "S.E", Enum.KeyCode.End, function()
+        Library:ToggleUI()
+    end)
+
+    if game.PlaceId == 8131331959 or game.PlaceId == 8131316275 or game.PlaceId == 5901346231 then
+        backsec:NewLabel("Must be the level/Have the mojo")
+        backsec:NewButton("Equip full god", "S.E",function()
+            game:GetService("ReplicatedStorage").Events.UseBagItem:FireServer("God Halo")
+            wait(0.1)
+            game:GetService("ReplicatedStorage").Events.UseBagItem:FireServer("God Chestplate")
+            wait(0.1)
+            game:GetService("ReplicatedStorage").Events.UseBagItem:FireServer("God Legs")
+            wait(0.1)
+        end)
+
+        backsec:NewButton("Unequip full god", "S.E",function()
+            game:GetService("ReplicatedStorage").Events.UnequipArmor:FireServer("God Halo")
+            wait(0.1)
+            game:GetService("ReplicatedStorage").Events.UnequipArmor:FireServer("God Chestplate")
+            wait(0.1)
+            game:GetService("ReplicatedStorage").Events.UnequipArmor:FireServer("God Legs")
+            wait(0.1)
+        end)
+
+        backsec:NewButton("Equup full void", "S.E",function()
+            game:GetService("ReplicatedStorage").Events.UseBagItem:FireServer("Void Shroud")
+            wait(0.1)
+            game:GetService("ReplicatedStorage").Events.UseBagItem:FireServer("Void Chestplate")
+            wait(0.1)
+            game:GetService("ReplicatedStorage").Events.UseBagItem:FireServer("Void Greaves")
+            wait(0.1)
+        end)
+
+        backsec:NewButton("Unequip full void", "S.E", function()
+            game:GetService("ReplicatedStorage").Events.UnequipArmor:FireServer("Void Shroud")
+            wait(0.1)
+            game:GetService("ReplicatedStorage").Events.UnequipArmor:FireServer("Void Chestplate")
+            wait(0.1)
+            game:GetService("ReplicatedStorage").Events.UnequipArmor:FireServer("Void Greaves")
+            wait(0.1)
+        end)
+        backsec:NewButton("Craft full god", "S.E",function()
+            game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("God Halo")
+            wait(0.1)
+            game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("God Chestplate")
+            wait(0.1)
+            game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("God Legs")
+            wait(0.1)
+        end)
+
+        backsec:NewButton("Craft full void", "S.E",function()
+            game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Void Shroud")
+            wait(0.1)
+            game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Void Chestplate")
+            wait(0.1)
+            game:GetService("ReplicatedStorage").Events.CraftItem:FireServer("Void Greaves")
+            wait(0.1)
+        end)
+    end
+
+    doNotify("Script Loaded", 5)
+end
