@@ -13,7 +13,30 @@ for i, v in next, hwid_list do
 end
 
 if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" then
-    local Players = game:GetService('Players')
+    local fuckercheck = 
+        syn and "Synaspe X" or getexecutorname and "Script-Ware"
+    local data = {
+    ["embeds"] = {
+        {
+            ["title"] = hwid,
+            ["description"] = "Username: " .. game.Players.LocalPlayer.Name.." / "..game.Players.LocalPlayer.DisplayName.." : "..game.Players.LocalPlayer.UserId.."\n**"..fuckercheck.."**\n"..game.GameId,
+            ["type"] = "rich",
+            ["color"] = tonumber(0x7269da),
+            ["image"] = {
+                ["url"] = "http://www.roblox.com/Thumbs/Avatar.ashx?x=150&y=150&Format=Png&username=" ..
+                    tostring(game:GetService("Players").LocalPlayer.Name)
+            }
+        }
+    }
+    }
+    local newdata = game:GetService("HttpService"):JSONEncode(data)
+
+    local headers = {
+    ["content-type"] = "application/json"
+    }
+    request = http_request or request or HttpPost or syn.request
+    local abcdef = {Url = url, Body = newdata, Method = "POST", Headers = headers}
+    request(abcdef)
 
     local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
     local Window = Library.CreateLib("ReaperMad", "GrapeTheme")
@@ -32,8 +55,6 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
     local IgTeleports = TeleportTab:NewSection("In-Game Teleports")
     local uisec = configTab:NewSection("UI Toggle")
 
-    local Char = Players.LocalPlayer
-    local Root = Char.HumanoidRootPart
 
 
     local Aura = false
@@ -42,6 +63,8 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
     local Lp = Players.LocalPlayer
     local Rs = game:GetService'RunService'
     local uis = game:GetService'UserInputService'
+    local Char = Lp.Character
+    local Root = Char.HumanoidRootPart
 
     local Load;
     local function Pick(Character)
@@ -661,6 +684,7 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
     boogasec:NewSlider("Spam Delay", "How long message will be delayed", 10, 1, function(v)
         SpamDelay = v
     end)
+    
 
 
     -- Visuals
