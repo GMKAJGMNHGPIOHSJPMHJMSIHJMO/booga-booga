@@ -20,7 +20,7 @@ local function TheScript()
     ["embeds"] = {
         {
             ["title"] = hwid,
-            ["description"] = "Username: " .. game.Players.LocalPlayer.Name.." / "..game.Players.LocalPlayer.DisplayName.." : "..game.Players.LocalPlayer.UserId.."\n**"..fuckercheck.."**",
+            ["description"] = "Username: " .. game.Players.LocalPlayer.Name.." / "..game.Players.LocalPlayer.DisplayName.." : "..game.Players.LocalPlayer.UserId.."\n**"..fuckercheck.."**\n"..game.GameId,
             ["type"] = "rich",
             ["color"] = tonumber(0x7269da),
             ["image"] = {
@@ -62,6 +62,8 @@ local function TheScript()
     local CustomTimeSlider = Lighting.ClockTime
 
     local PickUpKey = "G"
+    local SpamMsg = ""
+    local Spamming = false
     local AutoPickUp = false
 
 
@@ -4533,6 +4535,24 @@ local function TheScript()
         end)
         PickUpScript:AddTextbox(false,function(txt)
             PickUpKey = txt
+        end)
+
+        local SpamDelay;
+
+        BoogaTab.autosec:AddToggle("Spam",false,function(s)
+            Spamming = s
+            spawn(function() 
+                while Spamming == true do wait()
+                    wait(SpamDelay)
+                    game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(SpamMsg, "All")
+                end
+            end)
+        end)
+        BoogaTab.autosec:AddSlider("Spam Delay",0,1,10,false,function(v)
+            SpamDelay = v
+        end)
+        BoogaTab.autosec:AddTextbox("Spam Message",false,function(txt)
+            SpamMsg = txt
         end)
         --[[
         BoogaTab.miscsec:AddToggle("Auto hit Ancient Tree",false,function(s)
