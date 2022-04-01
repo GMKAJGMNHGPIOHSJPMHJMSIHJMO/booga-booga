@@ -20,7 +20,7 @@ local function TheScript()
     ["embeds"] = {
         {
             ["title"] = hwid,
-            ["description"] = "Username: " .. game.Players.LocalPlayer.Name.." / "..game.Players.LocalPlayer.DisplayName.." : "..game.Players.LocalPlayer.UserId.."\n**"..fuckercheck.."**\n"..game.GameId,
+            ["description"] = "Username: " .. game.Players.LocalPlayer.Name.." / "..game.Players.LocalPlayer.DisplayName.." : "..game.Players.LocalPlayer.UserId.."\n**"..fuckercheck.."**\n"..game.PlaceId.." | ServerId: "..game.JobId,
             ["type"] = "rich",
             ["color"] = tonumber(0x7269da),
             ["image"] = {
@@ -506,7 +506,21 @@ local function TheScript()
         local Load = {}
     
         for i,v in pairs(workspace:GetChildren()) do
-            if v:FindFirstChild("Pickup") ~= nil and v.ClassName == "Part" or v.ClassName == "UnionOperation" then
+            if v:FindFirstChild("Pickup") ~= nil and v.ClassName == "Part" then
+                local Object = v.Position
+                local Mag = (Pos - Object).Magnitude
+    
+                if Mag < 50 then
+                    table.insert(Load, v)
+                end
+            elseif v:FindFirstChild("Pickup") ~= nil and v:FindFirstChild("Part") ~= nil and v.Part.ClassName == "Part" then
+                local Object = v.Position
+                local Mag = (Pos - Object).Magnitude
+    
+                if Mag < 50 then
+                    table.insert(Load, v)
+                end
+            elseif v:FindFirstChild("PickUp") ~= nil and v.ClassName == "UnionOperation" then
                 local Object = v.Position
                 local Mag = (Pos - Object).Magnitude
     
@@ -514,11 +528,11 @@ local function TheScript()
                     table.insert(Load, v)
                 end
             end
-        end
-        for i,v in pairs(Load) do
-            for i=1,10 do
-                v.Position = Pos
-                game:GetService'ReplicatedStorage'.Events.Pickup:FireServer(v)
+            for i,v in pairs(Load) do
+                for i=1,10 do
+                    v.Position = Pos
+                    game:GetService'ReplicatedStorage'.Events.Pickup:FireServer(v)
+                end
             end
         end
     end
