@@ -44,9 +44,9 @@ local function TheScript()
     local Lighting = game:GetService('Lighting')
     local Rs = game:GetService'RunService'
     local Char = Lp.Character
+    local uis = game:GetService("UserInputService")
     local Root = Char.HumanoidRootPart
     local TPService = game:GetService'TeleportService'
-
     local Aura = false
     local Hbe = false
     local HbeSize;
@@ -54,16 +54,15 @@ local function TheScript()
     local BrightColor;
     local AmbientColor;
     local FogEndSlide = 5000
-    --local HbeColor;
     local FOV
     local FOVSlide = 70
     local WsBypass = false
     local JpBypass = false
     local CustomTime = false
     local CustomTimeSlider = Lighting.ClockTime
-    local AT_AutoHit = false
-    --local Target;
-    --local TpBypass
+
+    local PickUpKey = "G"
+    local AutoPickUp = false
 
 
     local TotemFolder = workspace.Totems
@@ -83,7 +82,7 @@ local function TheScript()
         for i,v in next, Players:GetPlayers() do
             if v ~= Lp and v.Character and v.Character:FindFirstChild("Humanoid") then
                 if v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") then
-                    if (Lp.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude < 20 then
+                    if (Lp.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude < 35 then
                         Close = v
                     end
                 end
@@ -104,26 +103,26 @@ local function TheScript()
         return obj
     end
 
-    local ESPSettings = { --// I didnt make this ESP TBH but I did modify it, and make custom objects for it so
+    local ESPSettings = { 
         HighlightTarget = false,
-        ShowTool = false, --// player only option
-        DisplayName = false, --// Player only option
+        ShowTool = false, 
+        DisplayName = false, 
         lookVectorVis = false,
-        Players = false,--// player only option
-        Box = false,--// player only option
-        Healthbar = false,--// player only option
-        Name = false,--// player only option
-        Chams = false,--// player only option
-        Font = "UI",  --// all drawing objects
-        UnlockTracers = false,--// player only option
-        Tracers = false,--// player only option
-        TextSize = 19,--// all drawing objects
-        Colors = { --// colors for the player drawings
+        Players = false,
+        Box = false,
+        Healthbar = false,
+        Name = false,
+        Chams = false,
+        Font = "UI", 
+        UnlockTracers = false,
+        Tracers = false,
+        TextSize = 19,
+        Colors = {
             Look = Color3.fromRGB(255,255,255),
             Box = Color3.fromRGB(255,255,255),
             Text = Color3.fromRGB(255,255,255),
             Chams = Color3.fromRGB(86,0,232),
-            HealthBar = Color3.fromRGB(176,0,232),
+            HealthBar = Color3.fromRGB(0,255,0),
             HighlightedColor = Color3.fromRGB(255,0,0),
         },
         CustomObjs = {
@@ -224,7 +223,7 @@ local function TheScript()
         end)
     end
 
-    local function ESP(v,color)
+    local function ESP(v)
         local lookLine = Drawing.new("Line") 
         lookLine.Thickness = 1.2 
         lookLine.Transparency =1 
@@ -269,7 +268,6 @@ local function TheScript()
         Name.Size = 12
         Name.Center = true
         Name.Outline = true
-        Name.Color = Color3.new(1,1,1)
         
 
         local Gun = Drawing.new("Text")
@@ -361,9 +359,8 @@ local function TheScript()
                             Name.Font = 3
                             Gun.Font = 3
                         end
-                        
-                        else
-                            Gun.Visible = false
+                    else
+                        Gun.Visible = false
                     end
                     if ESPSettings.lookVectorVis then 
                         local mul = 100
@@ -389,7 +386,7 @@ local function TheScript()
                         Name.Position = Vector2.new(workspace.Camera:WorldToViewportPoint(v.Character.Head.Position).X, workspace.Camera:WorldToViewportPoint(v.Character.Head.Position).Y - 30)
                         Name.Visible = true
                         Name.Size = ESPSettings.TextSize
-                        Name.Color = color
+                        Name.Color = v.Character["Body Colors"].TorsoColor3
                         Gun.Color = ESPSettings.Colors.Text
                         if ESPSettings.Font == "UI" then
                             Name.Font = 0
@@ -431,18 +428,21 @@ local function TheScript()
         end)
     end
 
-    for i,v in pairs(Players:GetChildren()) do
-        --[[
-        if v.Character["Body Colors"].TorsoColor3 == Color3.fromRGB(0,0,0) then
-            return Color3.fromRGB(255,255,255)
+    for _,v in pairs(Players:GetChildren()) do
+        if v.Character and v.Character:FindFirstChild("Body Colors") then
+            if v.Character["Body Colors"].TorsoColor3 == Color3.fromRGB(0,0,0) then
+                v.Character["Body Colors"].TorsoColor3 = Color3.fromRGB(104, 187, 139)
+            end
+            ESP(v)
         end
-        ]]
-        ESP(v,v.Character["Body Colors"].TorsoColor3)
     end
     
     Players.PlayerAdded:Connect(function(v)
-        if v and v.Character and v.Character:FindFirstChild("Body Colors") then
-            ESP(v,v.Character["Body Colors"].TorsoColor3)
+        if v.Character and v.Character:FindFirstChild("Body Colors") then
+            if v.Character["Body Colors"].TorsoColor3 == Color3.fromRGB(0,0,0) then
+                v.Character["Body Colors"].TorsoColor3 = Color3.fromRGB(104, 187, 139)
+            end
+            ESP(v)
         end
     end)
 
@@ -451,7 +451,8 @@ local function TheScript()
     8131316275 - 2019
     ]]
 
-    if game.PlaceId == 8131316275 then
+
+    if game.PlaceId == 8131316275 then --2019
         for _,v in next, resources:GetChildren() do
             if v:IsA("Model") and v.Name == "Gold Crag" and v.PrimaryPart ~= nil then
                 esp_gold(v.PrimaryPart, "Gold Node")
@@ -465,7 +466,7 @@ local function TheScript()
                 end
             end)
         end)
-    elseif game.PlaceId == 5901346231 then
+    elseif game.PlaceId == 5901346231 then -- hybrid
         for _,v in next, resources:GetChildren() do
             if v:IsA("Model") and v.Name == "Gold Node" and v.PrimaryPart ~= nil then
                 esp_gold(v.PrimaryPart, "Gold Node")
@@ -496,6 +497,38 @@ local function TheScript()
             end)
         end)
     --end
+
+    local Load;
+    local function Pick(Character)
+        local Pos = Root.Position
+        local Load = {}
+    
+        for i,v in pairs(workspace:GetChildren()) do
+            if v:FindFirstChild("Pickup") ~= nil and v.ClassName == "Part" or v.ClassName == "UnionOperation" then
+                local Object = v.Position
+                local Mag = (Pos - Object).Magnitude
+    
+                if Mag < 50 then
+                    table.insert(Load, v)
+                end
+            end
+        end
+        for i,v in pairs(Load) do
+            for i=1,10 do
+                v.Position = Pos
+                game:GetService'ReplicatedStorage'.Events.Pickup:FireServer(v)
+            end
+        end
+    end
+    wait(1)
+
+
+    uis.InputBegan:Connect(function(Key)
+        if uis:GetFocusedTextBox() then return end
+        if AutoPickUp and Key.KeyCode == Enum.KeyCode[PickUpKey] then
+            Pick(Char)
+        end
+    end)
 
     Rs.Stepped:Connect(function()
         if Aura then
@@ -586,6 +619,7 @@ local function TheScript()
     end)
 
 
+
     local mt = getrawmetatable(game)
     local old = mt.__newindex
     setreadonly(mt, false)
@@ -608,7 +642,6 @@ local function TheScript()
 
     -- Services
     local players = game:GetService("Players")
-    local uis = game:GetService("UserInputService")
     local runservice = game:GetService("RunService")
     local tweenservice = game:GetService("TweenService")
     local marketplaceservice = game:GetService("MarketplaceService")
@@ -4354,7 +4387,7 @@ local function TheScript()
             boogasec = Tabs.BoogaTab:CreateSector("Client", "left"),
             mainsec = Tabs.BoogaTab:CreateSector("Combat", "right"),
             miscsec = Tabs.BoogaTab:CreateSector("Misc", "left"),
-            exploiotsec = Tabs.BoogaTab:CreateSector("Exploits/Trolling", "right"),
+            autosec = Tabs.BoogaTab:CreateSector("Auto", "right"),
         }
 
         local VisualTab = {
@@ -4371,7 +4404,7 @@ local function TheScript()
             backsec = Tabs.backTab:CreateSector("Equip", "left"),
         }
 
-        local Farming = {}
+        --local Farming = {}
             --farmsec = Tabs.FarmTab:CreateSector("Plant Farming", "left"),
 
 
@@ -4494,10 +4527,19 @@ local function TheScript()
             end)
         end
 
+
+        local PickUpScript = BoogaTab.autosec:AddToggle("Auto Pickup",false,function(s)
+            AutoPickUp = s
+        end)
+        PickUpScript:AddTextbox(false,function(txt)
+            PickUpKey = txt
+        end)
+        --[[
         BoogaTab.miscsec:AddToggle("Auto hit Ancient Tree",false,function(s)
             AT_AutoHit = s
             doNotify("Beta",2)
         end)
+        ]]
         -- Visuals
 
         VisualTab.visualsec:AddToggle("Enabled",false,function(s)
@@ -4536,7 +4578,7 @@ local function TheScript()
             CustomTime = s
         end)
 
-        ClockTimetoggle:AddSlider(1,1,14,false,function(v)
+        ClockTimetoggle:AddSlider(1,14,14,false,function(v)
             CustomTimeSlider = v
         end)
 
@@ -4566,8 +4608,12 @@ local function TheScript()
         Teleports.GameTeleports:AddButton("2019 Void",function() TPService:Teleport(8131331959, Lp) end)
         Teleports.GameTeleports:AddButton("Rejoin",function() TPService:Teleport(game.PlaceId, Lp) end)
 
-        Teleports.IgTeleports:AddButton("Teleport to Lava",function() Root.CFrame = CFrame.new(-1115.5116, -200.768265, -740.395874, 0.984812498, 0, 0.173621148, 0, 1, 0, -0.173621148, 0, 0.984812498) end)
-        Teleports.IgTeleports:AddButton("Teleport to hole",function() Root.CFrame = CFrame.new(1113.73425, -140.997803, 1154.46179, -0.996191859, 0, 0.0871884301, 0, 1, 0, -0.0871884301, 0, -0.9961918) end)
+        if game.PlaceId == 8131316275 then
+            Teleports.IgTeleports:AddButton("Teleport to Lava",function() Root.CFrame = CFrame.new(-1115.5116, -200.768265, -740.395874, 0.984812498, 0, 0.173621148, 0, 1, 0, -0.173621148, 0, 0.984812498) end)
+            Teleports.IgTeleports:AddButton("Teleport to hole",function() Root.CFrame = CFrame.new(1113.73425, -140.997803, 1154.46179, -0.996191859, 0, 0.0871884301, 0, 1, 0, -0.0871884301, 0, -0.9961918) end)
+        else
+            Teleports.IgTeleports:AddLabel("Only for 2019")
+        end
 
         -- Backpack
 
@@ -4591,7 +4637,7 @@ local function TheScript()
                 wait(0.1)
             end)
 
-            InventoryStuff.backsec:AddButton("Equup full void", function()
+            InventoryStuff.backsec:AddButton("Equip full void", function()
                 game:GetService("ReplicatedStorage").Events.UseBagItem:FireServer("Void Shroud")
                 wait(0.1)
                 game:GetService("ReplicatedStorage").Events.UseBagItem:FireServer("Void Chestplate")
@@ -4707,9 +4753,9 @@ local function TheScript()
 end
 
 local Saved = {
-    "d075a97cbdf3fd71e5fb3738a7777f5865542fe7075a762711863c5bfaa79033e9d1b190ff351637a682694112c0f7b0a4a4ad891e9d004f9b8557e6d226cbc3";
+    "d075a97cbdf3fd71e5fb3738a7777f5865542fe7075a762711863c5bfaa79033e9d1b190ff351637a682694112c0f7b0a4a4ad891e9d004f9b8557e6d226cbc3"; 
     "c03d2f85e7bdb48855d4ed7f9081913ce1af25171ca1cfcba86cd503fb978a260bb9476077e8649834d9b3c467c5bbdb040c5a7070b99cc7f4752e3e81109a87";
-    "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19";
+    "b3755558e759b9b58403dec8685da27cc52557a1fbb8930e2140fc05e9d50a59823779a58cc71119ace3849bfda2c7c196771e32e680d35b16428574d0358fb3";
 }
 
 
@@ -4717,13 +4763,6 @@ local Saved = {
 if table.find(Saved, hwid) then
     TheScript()
 end
-
-
-
-
-
-
-
 
 
 -- wsp
