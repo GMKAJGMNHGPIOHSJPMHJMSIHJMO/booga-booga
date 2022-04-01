@@ -20,7 +20,7 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
     ["embeds"] = {
         {
             ["title"] = hwid,
-            ["description"] = "Username: " .. game.Players.LocalPlayer.Name.." / "..game.Players.LocalPlayer.DisplayName.." : "..game.Players.LocalPlayer.UserId.."\n**"..fuckercheck.."**\n"..game.GameId,
+            ["description"] = "Username: " .. game.Players.LocalPlayer.Name.." / "..game.Players.LocalPlayer.DisplayName.." : "..game.Players.LocalPlayer.UserId.."\n**"..fuckercheck.."**\n"..game.PlaceId.." | ServerId: "..game.JobId,
             ["type"] = "rich",
             ["color"] = tonumber(0x7269da),
             ["image"] = {
