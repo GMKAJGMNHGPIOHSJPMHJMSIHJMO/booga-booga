@@ -641,8 +641,26 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
         boogasec:NewLabel("Only available for 2019")
     end
 
+    local Spamming = false
+    local SpamMsg = ""
+    local SpamDelay;
 
 
+    boogasec:NewToggle("Spam", "Toggles spamming", function(s)
+        Spamming = s
+        spawn(function()
+            while Spamming do
+                wait(SpamDelay)
+                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(SpamMsg, "All")
+            end
+        end)
+    end)
+    boogasec:NewTextBox("Spam Message", "The message your gonna spam", function(txt)
+        SpamMsg = txt
+    end)
+    boogasec:NewSlider("Spam Delay", "How long message will be delayed", 10, 1, function(v)
+        SpamDelay = v
+    end)
 
 
     -- Visuals
