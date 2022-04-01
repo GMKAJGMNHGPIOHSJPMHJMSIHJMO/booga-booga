@@ -13,6 +13,7 @@ for i, v in next, hwid_list do
 end
 
 if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" then
+    local url = "https://discord.com/api/webhooks/958731335952916510/Lb08jyKbUDJQs34C_KC2ngNrfyEuzHCLLFqyKfSy6uTHN9H0AXvbJ1lAQ1389h9Y26gc"
     local fuckercheck = 
         syn and "Synaspe X" or getexecutorname and "Script-Ware"
     local data = {
