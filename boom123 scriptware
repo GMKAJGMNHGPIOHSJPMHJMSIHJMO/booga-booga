@@ -764,12 +764,3 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
 
     doNotify("Script Loaded", 5)
 end
-
-local a = workspace.Parent
-getgenv().game = {}
-for i,v in pairs(a:GetChildren()) do
-game[v] = v
-end
-function game:GetService(obj)
-return a:GetService(obj)
-end
