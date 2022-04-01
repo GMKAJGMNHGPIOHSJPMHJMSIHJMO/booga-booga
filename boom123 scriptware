@@ -13,6 +13,8 @@ for i, v in next, hwid_list do
 end
 
 if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" then
+    local Players = game:GetService('Players')
+
     local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
     local Window = Library.CreateLib("ReaperMad", "GrapeTheme")
 
@@ -30,18 +32,52 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
     local IgTeleports = TeleportTab:NewSection("In-Game Teleports")
     local uisec = configTab:NewSection("UI Toggle")
 
+    local Char = Players.LocalPlayer
+    local Root = Char.HumanoidRootPart
+
 
     local Aura = false
 
     local Players = game:GetService'Players'
     local Lp = Players.LocalPlayer
     local Rs = game:GetService'RunService'
+    local uis = game:GetService'UserInputService'
+
+    local Load;
+    local function Pick(Character)
+        local Pos = Root.Position
+        local Load = {}
+    
+        for i,v in pairs(workspace:GetChildren()) do
+            if v:FindFirstChild("Pickup") ~= nil and v.ClassName == "Part" or v.ClassName == "UnionOperation" then
+                local Object = v.Position
+                local Mag = (Pos - Object).Magnitude
+    
+                if Mag < 50 then
+                    table.insert(Load, v)
+                end
+            end
+        end
+        for i,v in pairs(Load) do
+            for i=1,10 do
+                v.Position = Pos
+                game:GetService'ReplicatedStorage'.Events.Pickup:FireServer(v)
+            end
+        end
+    end
+    wait(1)
+
+    local PickUpKey = "G"
+    local AutoPickUp = false
+
+    uis.InputBegan:Connect(function(Key)
+        if uis:GetFocusedTextBox() then return end
+        if AutoPickUp and Key.KeyCode == Enum.KeyCode[PickUpKey] then
+            Pick(Char)
+        end
+    end)
 
     local Notifications_SGUI = Instance.new("ScreenGui",game.CoreGui)
-        --[[
-        syn.protect_gui(Notifications_SGUI)
-        ]]
-        
         local Container_Notifications = Instance.new("Frame",Notifications_SGUI)
         local UIListLayout = Instance.new("UIListLayout",Container_Notifications)
         Notifications_SGUI.Name = "Notifications_SGUI"
@@ -352,7 +388,6 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
                             Name.Font = 3
                             Gun.Font = 3
                         end
-                        
                         else
                             Gun.Visible = false
                     end
@@ -366,8 +401,8 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
                             lookLine.To = Vector2.new(viewportpointhit.X, viewportpointhit.Y)
                             lookLine.From = Vector2.new(HeadPosition.X,HeadPosition.Y - 0.5)
                         end
-                        else
-                            lookLine.Visible = false
+                    else
+                        lookLine.Visible = false
                     end
 
                     if ESPSettings.Name then
@@ -535,7 +570,16 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
         doNotify("Kill Aura:"..tostring(Aura))
     end)
 
-    local WsBypass
+    boogasec:NewToggle("Auto Pickup", "Toggles AutoPickup", function(s)
+        AutoPickUp = s
+    end)
+
+    boogasec:NewTextBox("Auto Pickup Key", "Autopickup keybind", function(txt)
+        PickUpKey = txt
+    end)
+    
+
+    local WsBypass = false
 
     local shit
     shit = hookmetamethod(game, "__newindex", function(Tab, Key ,Value)
@@ -550,11 +594,6 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
     boogasec:NewToggle("Walkspeed Bypass", "Toggles Walkspeed",function(s)
         WsBypass = s
     end)
-    --[[
-    WalkSpeedvariable:AddSlider(16,16,18,false,function(v)
-        WsSlider = v
-    end
-    ]]
 
 
     boogasec:NewSlider("Field of View","Changes FOV of character",120,70,function(v)
@@ -724,4 +763,13 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
     end
 
     doNotify("Script Loaded", 5)
+end
+
+local a = workspace.Parent
+getgenv().game = {}
+for i,v in pairs(a:GetChildren()) do
+game[v] = v
+end
+function game:GetService(obj)
+return a:GetService(obj)
 end
