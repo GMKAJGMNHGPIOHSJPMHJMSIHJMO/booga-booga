@@ -188,49 +188,51 @@ local function Esp(v)
 
 
     game:GetService'RunService'.RenderStepped:Connect(function()
-        Name.Color = v.Character["Body Colors"].TorsoColor3
-        if EspSettings.Enabled and v.Character ~= nil and v.Character:FindFirstChild("HumanoidRootPart") ~= nil and v.Character:FindFirstChild("Humanoid") ~= nil and v.Character:FindFirstChild("Head") ~= nil and v.Character.Humanoid.Health ~= 0 then
-            local Vector, onScreen = Camera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position)
-            local Distance = (Camera.CFrame.p - v.Character.PrimaryPart.Position).Magnitude
-            local RootPart = v.Character.HumanoidRootPart
-            local Head = v.Character.Head
-            local Size = (Camera:WorldToViewportPoint(RootPart.Position - Vector3.new(0, 3, 0)).Y - Camera:WorldToViewportPoint(RootPart.Position + Vector3.new(0, 2.6, 0)).Y) / 2
-            local BoxSize = Vector2.new(math.floor(Size * 1.8), math.floor(Size * 2.3))
-            local BoxPos = Vector2.new(math.floor(Vector.X - Size * 1.8 / 2), math.floor(Vector.Y - Size * 2.3/ 2))
-            if onScreen then
-                Box.Size = BoxSize
-                Box.Position = BoxPos
-                
-                InnerBox.Size = BoxSize
-                InnerBox.Position = BoxPos
+        if v and v.Character and v.Character["Body Colors"] then
+            Name.Color = v.Character["Body Colors"].TorsoColor3
+            if EspSettings.Enabled and v.Character ~= nil and v.Character:FindFirstChild("HumanoidRootPart") ~= nil and v.Character:FindFirstChild("Humanoid") ~= nil and v.Character:FindFirstChild("Head") ~= nil and v.Character.Humanoid.Health ~= 0 then
+                local Vector, onScreen = Camera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position)
+                local Distance = (Camera.CFrame.p - v.Character.PrimaryPart.Position).Magnitude
+                local RootPart = v.Character.HumanoidRootPart
+                local Head = v.Character.Head
+                local Size = (Camera:WorldToViewportPoint(RootPart.Position - Vector3.new(0, 3, 0)).Y - Camera:WorldToViewportPoint(RootPart.Position + Vector3.new(0, 2.6, 0)).Y) / 2
+                local BoxSize = Vector2.new(math.floor(Size * 1.8), math.floor(Size * 2.3))
+                local BoxPos = Vector2.new(math.floor(Vector.X - Size * 1.8 / 2), math.floor(Vector.Y - Size * 2.3/ 2))
+                if onScreen then
+                    Box.Size = BoxSize
+                    Box.Position = BoxPos
+                    
+                    InnerBox.Size = BoxSize
+                    InnerBox.Position = BoxPos
 
-                if EspSettings.Boxes then
-                    Box.Visible = true
-                    InnerBox.Visible = true
-                    InnerBox.Transparency = EspSettings.InnerBoxTransparency
-                else
-                    Box.Visible = false
-                    InnerBox.Visible = false
-                end
+                    if EspSettings.Boxes then
+                        Box.Visible = true
+                        InnerBox.Visible = true
+                        InnerBox.Transparency = EspSettings.InnerBoxTransparency
+                    else
+                        Box.Visible = false
+                        InnerBox.Visible = false
+                    end
 
-                if EspSettings.Names then
-                    Name.Text = v.Name
-                    Name.Position = Vector2.new(BoxSize.X / 2 + BoxPos.X, BoxPos.Y - 16) -- Dont know how this works but based off of your knowledge this works
-                    Name.Visible = true
-                    Name.Font = 0
-                    Name.Size = 19
+                    if EspSettings.Names then
+                        Name.Text = v.Name
+                        Name.Position = Vector2.new(BoxSize.X / 2 + BoxPos.X, BoxPos.Y - 16) -- Dont know how this works but based off of your knowledge this works
+                        Name.Visible = true
+                        Name.Font = 0
+                        Name.Size = 19
+                    else
+                        Name.Visible = false
+                    end
                 else
                     Name.Visible = false
+                    Box.Visible = false
+                    InnerBox.Visible = false
                 end
             else
                 Name.Visible = false
                 Box.Visible = false
                 InnerBox.Visible = false
             end
-        else
-            Name.Visible = false
-            Box.Visible = false
-            InnerBox.Visible = false
         end
     end)
 end
