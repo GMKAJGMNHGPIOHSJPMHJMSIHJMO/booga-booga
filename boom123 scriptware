@@ -564,19 +564,19 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
     -- Visuals
 
     visualsec:NewToggle("Enabled", "Toggles ESP",function(s)
-        EspSettings.Players = s
+        EspSettings.Enabled = s
     end)
 
     visualsec:NewToggle("Draw Names","Adds Names",function(s)
-        EspSettings.Name = s
+        EspSettings.Names = s
     end)
 
     visualsec:NewToggle("Draw Boxes", "Adds Boxes",function(s)
-        EspSettings.Box = s
+        EspSettings.Boxes = s
     end)
 
-    visualsec:NewToggle("Draw Healthbar", "Adds healthbar",function(v)
-        EspSettings.Healthbar = v
+    visualsec:NewToggle("Draw Health", "Adds healthbar",function(s)
+        EspSettings.Health = s
     end)
     visualsec:NewToggle("Draw Tools", "Adds Tools",function(s)
         EspSettings.ShowTool = s
@@ -596,7 +596,7 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
         Lighting.ClockTime = v
     end)
 
-    lightsec:NewSlider("Fog End", "Changes fog end", 5000,2000,function(v)
+    lightsec:NewSlider("Fog End", "Changes fog end", 1500,5000,function(v)
         Lighting.FogEnd = v
     end)
     lightsec:NewSlider("Brightness", "Changes brightness of game", 10, 0, function(v) 
