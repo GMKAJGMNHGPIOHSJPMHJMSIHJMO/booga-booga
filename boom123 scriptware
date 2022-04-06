@@ -439,6 +439,15 @@ if hwid == "E0B9C3800AA0DB0F650AE4747E16CC0C126FF33EC57EFB9B838B420143FD1E19" th
     boogasec:NewToggle("Kill Aura", "Toggles Aura",function(s)
         Aura = s
         doNotify("Kill Aura:"..tostring(Aura))
+        local DiffChar = game.Players.LocalPlayer.Character
+        local SwingAnim = Instance.new("Animation")
+        SwingAnim.AnimationId = "rbxassetid://1262318281"
+        local animHum = DiffChar.Humanoid:LoadAnimation(SwingAnim)
+        while Aura do wait(0.5)
+            if DiffChar:FindFirstChildWhichIsA("Model") and DiffChar:FindFirstChildWhichIsA("Model").Name ~= "Shelly Friend" then
+                animHum:Play()
+            end
+        end
     end)
 
     boogasec:NewToggle("Auto Pickup", "Toggles AutoPickup", function(s)
